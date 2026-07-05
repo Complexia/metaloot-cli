@@ -1,0 +1,44 @@
+{
+  "name": "@metaloot/cli",
+  "version": "0.1.0",
+  "description": "Publish browser games to Metaloot from your terminal.",
+  "type": "module",
+  "license": "MIT",
+  "author": "Metaloot",
+  "homepage": "https://metaloot.app",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Complexia/metaloot-cli.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Complexia/metaloot-cli/issues"
+  },
+  "bin": {
+    "metaloot": "dist/index.js"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "clean": "rm -rf dist",
+    "prepack": "npm run clean && npm run build",
+    "typecheck": "tsc -p tsconfig.json --noEmit"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "keywords": [
+    "metaloot",
+    "games",
+    "deploy",
+    "cli",
+    "browser-games"
+  ],
+  "devDependencies": {
+    "@types/node": "^20.19.0",
+    "typescript": "^5.9.0"
+  }
+}
