@@ -53,8 +53,24 @@ Set `METALOOT_TOKEN` (create one at `https://metaloot.app/cli/auth`) and run
 
 ## Using Metaloot auth in your game
 
-Every deployed game gets these routes on its own domain, handled by Metaloot's
-edge — you don't ship any server code:
+Deployed games get a "Sign in with Metaloot" button (top right) out of the
+box — signed-in players see their avatar with a sign-out menu instead. You
+don't have to do anything. To build your own sign-in UI instead, opt out with:
+
+```html
+<meta name="metaloot-auth-widget" content="off" />
+```
+
+A tiny API is available at `window.metaloot`:
+
+```ts
+const session = await window.metaloot.session; // { signedIn, user? }
+window.metaloot.signIn();
+window.metaloot.signOut();
+```
+
+Under the hood, every deployed game gets these routes on its own domain,
+handled by Metaloot's edge — you don't ship any server code:
 
 - `GET /auth/metaloot/start` — begins sign-in
 - `GET /auth/metaloot/callback` — OAuth callback
