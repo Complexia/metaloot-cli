@@ -25,6 +25,8 @@ const UPLOAD_RETRIES = 3;
 const SKIP_FILES = new Set([".DS_Store", "Thumbs.db"]);
 
 export type DeployArgs = {
+  /** Existing Metaloot game id to deploy into (from the game's settings). */
+  game?: string;
   name?: string;
   dir?: string;
   noBuild?: boolean;
@@ -177,6 +179,21 @@ export async function deploy(args: DeployArgs): Promise<void> {
   const pkg = readPackageJson(cwd);
   const projectConfig = loadProjectConfig(cwd);
 
+  // --game wins over metaloot.json so a project can be pointed at a game
+  // created in the portal. Drop the stored slug when they disagree — it
+  // belongs to the previously deployed game.
+  const gameId = args.game ?? projectConfig.gameId;
+  const retargeted =
+    args.game !== undefined &&
+    projectConfig.gameId !== undefined &&
+    projectConfig.gameId !== args.game;
+  if (retargeted) {
+    warn(
+      "Deploying into a different game than metaloot.json — the file will be updated after this deploy."
+    );
+  }
+  const slug = retargeted ? undefined : projectConfig.slug;
+
   const name =
     args.name ??
     projectConfig.name ??
@@ -202,8 +219,8 @@ export async function deploy(args: DeployArgs): Promise<void> {
 
   const started = await startDeploy(credentials.token, {
     name,
-    slug: projectConfig.slug,
-    gameId: projectConfig.gameId,
+    slug,
+    gameId,
     description: pkg?.description,
     files,
   });

@@ -41,6 +41,10 @@ description, screenshots, and tags later from your game's page on
 
 ### Deploy options
 
+- `--game <game-id>` — deploy into an existing Metaloot game instead of
+  creating a new one. Create the game page first at
+  [metaloot.app/publish](https://metaloot.app/publish) and copy the exact
+  command from the game's settings page.
 - `--name <name>` — game name; defaults to `package.json` `name`, then the
   folder name. Becomes your subdomain (`my-game` → `my-game.metaloot.app`).
 - `--dir <folder>` — build output folder; defaults to `dist/` or `build/`.

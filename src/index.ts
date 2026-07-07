@@ -4,7 +4,7 @@ import { deploy } from "./deploy.js";
 import { login, logout, printWhoAmI } from "./login.js";
 import { bold, cyan, dim, fail } from "./ui.js";
 
-const VERSION = "0.1.0";
+const VERSION = "0.2.0";
 
 const HELP = `
 ${bold("metaloot")} — publish browser games to Metaloot
@@ -19,6 +19,8 @@ ${cyan("Commands")}
   deploy            Build and publish the game in the current folder
 
 ${cyan("Deploy options")}
+  --game <game-id>  Deploy into an existing Metaloot game (copy the command
+                    from your game's settings page)
   --name <name>     Game name (defaults to package.json name)
   --dir <folder>    Build output folder (defaults to dist/ or build/)
   --no-build        Skip running the build script
@@ -38,6 +40,7 @@ async function main(): Promise<void> {
       help: { type: "boolean", short: "h" },
       version: { type: "boolean", short: "v" },
       token: { type: "string" },
+      game: { type: "string" },
       name: { type: "string" },
       dir: { type: "string" },
       "no-build": { type: "boolean" },
@@ -69,6 +72,7 @@ async function main(): Promise<void> {
       return;
     case "deploy":
       await deploy({
+        game: values.game,
         name: values.name,
         dir: values.dir,
         noBuild: values["no-build"],
