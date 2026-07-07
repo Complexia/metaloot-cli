@@ -1,6 +1,6 @@
 {
   "name": "@metaloot/cli",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Publish browser games to Metaloot from your terminal.",
   "type": "module",
   "license": "MIT",

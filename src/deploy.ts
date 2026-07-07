@@ -76,6 +76,21 @@ function runBuild(cwd: string, pkg: PackageJson | null): void {
   }
 }
 
+/** Reconstruct the user's deploy command with extra flags appended, so error
+ * messages never suggest a command that drops flags like --game. */
+function deployCommand(args: DeployArgs, extraFlags: string): string {
+  const parts = ["metaloot deploy"];
+  if (args.game) parts.push(`--game ${args.game}`);
+  if (args.name) {
+    parts.push(
+      args.name.includes(" ") ? `--name "${args.name}"` : `--name ${args.name}`
+    );
+  }
+  if (args.noBuild) parts.push("--no-build");
+  parts.push(extraFlags);
+  return parts.join(" ");
+}
+
 function resolveOutputDir(cwd: string, args: DeployArgs, configured?: string): string {
   const candidates = [args.dir, configured, "dist", "build"].filter(
     (dir): dir is string => Boolean(dir)
@@ -86,7 +101,7 @@ function resolveOutputDir(cwd: string, args: DeployArgs, configured?: string): s
   }
   if (existsSync(join(cwd, "index.html"))) {
     fail(
-      "No build output found. Found an index.html in the project root — if this is a static site with no build step, run `metaloot deploy --dir .`"
+      `No build output found. Found an index.html in the project root — if this is a static site with no build step, run \`${deployCommand(args, "--dir .")}\``
     );
   }
   fail(
@@ -98,9 +113,15 @@ function collectFiles(root: string): { path: string; size: number }[] {
   const files: { path: string; size: number }[] = [];
   const walk = (dir: string) => {
     for (const entry of readdirSync(dir, { withFileTypes: true })) {
+      // Never upload dotfiles: deploying a source folder with --dir . would
+      // otherwise publish secrets like .env. .well-known is the one dotpath
+      // with a legitimate static-hosting use.
+      if (entry.name.startsWith(".") && entry.name !== ".well-known") {
+        continue;
+      }
       const full = join(dir, entry.name);
       if (entry.isDirectory()) {
-        if (entry.name === "node_modules" || entry.name === ".git") continue;
+        if (entry.name === "node_modules") continue;
         walk(full);
       } else if (entry.isFile() && !SKIP_FILES.has(entry.name)) {
         files.push({

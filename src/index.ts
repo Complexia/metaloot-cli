@@ -4,7 +4,7 @@ import { deploy } from "./deploy.js";
 import { login, logout, printWhoAmI } from "./login.js";
 import { bold, cyan, dim, fail } from "./ui.js";
 
-const VERSION = "0.2.0";
+const VERSION = "0.2.1";
 
 const HELP = `
 ${bold("metaloot")} — publish browser games to Metaloot

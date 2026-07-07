@@ -48,7 +48,11 @@ description, screenshots, and tags later from your game's page on
 - `--name <name>` — game name; defaults to `package.json` `name`, then the
   folder name. Becomes your subdomain (`my-game` → `my-game.metaloot.app`).
 - `--dir <folder>` — build output folder; defaults to `dist/` or `build/`.
+  Use `--dir .` for static games with an `index.html` in the project root.
 - `--no-build` — deploy without running the build script.
+
+Dotfiles (`.env`, `.git/`, …) and `node_modules/` are never uploaded, so
+`--dir .` is safe for source folders. `.well-known/` is the one exception.
 
 ### CI
 
