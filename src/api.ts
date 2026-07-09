@@ -22,6 +22,8 @@ export type DeployFinalizeResponse = {
   playUrl: string;
   manageUrl: string;
   auth: { clientId: string; provisioned: boolean };
+  /** Absent when deploying against an older portal. */
+  multiplayer?: { enabled: boolean; roomsUrl: string; docsUrl: string };
 };
 
 export class ApiError extends Error {

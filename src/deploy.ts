@@ -271,4 +271,11 @@ export async function deploy(args: DeployArgs): Promise<void> {
       "Metaloot sign-in is provisioned for this game — players can log in at /auth/metaloot/start. Add a description and screenshots from the manage page."
     )
   );
+  if (finalized.multiplayer?.enabled) {
+    console.log(
+      dim(
+        `Multiplayer is provisioned too — signed-in players can join rooms at ${finalized.multiplayer.roomsUrl}. To add it, see ${finalized.multiplayer.docsUrl}`
+      )
+    );
+  }
 }

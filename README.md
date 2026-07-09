@@ -11,9 +11,9 @@ metaloot deploy   # builds and publishes the game in the current folder
 
 That's it. `metaloot deploy` builds your game, uploads it, and prints a live
 link like `https://your-game.metaloot.app`. The game is playable immediately —
-including **Sign in with Metaloot**, which is provisioned automatically. Add a
-description, screenshots, and tags later from your game's page on
-[metaloot.app](https://metaloot.app).
+including **Sign in with Metaloot** and **multiplayer rooms**, both
+provisioned automatically. Add a description, screenshots, and tags later
+from your game's page on [metaloot.app](https://metaloot.app).
 
 ## How it works
 
@@ -27,6 +27,9 @@ description, screenshots, and tags later from your game's page on
      `https://<name>.metaloot.app`.
   4. Provisions Metaloot auth: players can sign in at
      `/auth/metaloot/start` on your game's domain — no server code needed.
+  5. Provisions multiplayer: realtime rooms for signed-in players at
+     `wss://<name>.metaloot.app/mp/rooms/<roomId>`, ready whenever you want
+     to add them (see below).
 - A `metaloot.json` file is written next to your `package.json` so future
   deploys update the same game. Commit it.
 
@@ -101,6 +104,28 @@ import { mountMetalootAuth } from "@metaloot/auth/browser";
 
 mountMetalootAuth(document.getElementById("auth")!);
 ```
+
+## Adding multiplayer
+
+Every deployed game also has Metaloot's multiplayer backend provisioned:
+rooms with presence, message relay, and shared room state, running on
+Metaloot's edge on your game's own domain. It builds on Metaloot auth — the
+session cookie authenticates the room connection, so only signed-in players
+can join and every message carries a verified player identity.
+
+There is nothing to install; your site serves the client itself:
+
+```ts
+import { joinRoom, MetalootAuthRequiredError } from "/__metaloot/multiplayer.js";
+
+const room = await joinRoom("lobby"); // throws MetalootAuthRequiredError when signed out
+room.on("join", (player) => console.log(`${player.name} joined`));
+room.on("message", ({ from, data }) => handle(from, data));
+room.send({ kind: "move", x: 3, y: 7 });
+```
+
+Full API, limits, and a copy-paste agent prompt:
+[metaloot.app/docs/multiplayer](https://metaloot.app/docs/multiplayer).
 
 ## Requirements
 
