@@ -1,10 +1,11 @@
 #!/usr/bin/env node
 import { parseArgs } from "node:util";
+import { assetsCommand } from "./assets.js";
 import { deploy } from "./deploy.js";
 import { login, logout, printWhoAmI } from "./login.js";
 import { bold, cyan, dim, fail } from "./ui.js";
 
-const VERSION = "0.2.1";
+const VERSION = "0.2.3";
 
 const HELP = `
 ${bold("metaloot")} — publish browser games to Metaloot
@@ -17,6 +18,7 @@ ${cyan("Commands")}
   logout            Sign out and revoke this machine's token
   whoami            Show the signed-in Metaloot account
   deploy            Build and publish the game in the current folder
+  assets            Generate, explore, and download game assets
 
 ${cyan("Deploy options")}
   --game <game-id>  Deploy into an existing Metaloot game (copy the command
@@ -30,12 +32,18 @@ ${cyan("Login options")}
 
 ${cyan("Environment")}
   METALOOT_ORIGIN   Portal origin (default https://www.metaloot.app)
+  METALOOT_STUDIO_ORIGIN  Studio origin (default https://studio.metaloot.app)
   METALOOT_TOKEN    Token override for CI
 `;
 
 async function main(): Promise<void> {
+  const rawArgs = process.argv.slice(2);
+  if (rawArgs[0] === "assets") {
+    await assetsCommand(rawArgs.slice(1));
+    return;
+  }
   const { values, positionals } = parseArgs({
-    args: process.argv.slice(2),
+    args: rawArgs,
     options: {
       help: { type: "boolean", short: "h" },
       version: { type: "boolean", short: "v" },
