@@ -235,14 +235,15 @@ download those with `metaloot assets download` and ship the file.
 
 A coding agent can go from nothing to a deployed game with generated 3D
 assets without a browser or any human step. The only prerequisite is a
-CLI token, created once at
-[metaloot.app/cli/auth](https://metaloot.app/cli/auth).
+scoped API token created at
+[metaloot.app/settings/api-tokens](https://metaloot.app/settings/api-tokens).
+Choose the Game builder preset, or grant only the scopes the workflow needs.
 
 ```bash
 # 0. Authenticate non-interactively. Either export the env var…
-export METALOOT_TOKEN="mlt_…"          # used by every command, nothing stored
+export METALOOT_TOKEN="mtl_api_…"      # used by every command, nothing stored
 #    …or persist it for the machine:
-# metaloot login --token "mlt_…"
+# metaloot login --token "mtl_api_…"
 
 metaloot whoami                        # sanity check: prints the account
 
@@ -285,14 +286,14 @@ Notes for agents:
 
 ## CI
 
-Set `METALOOT_TOKEN` (create one at `https://metaloot.app/cli/auth`) and run
+Set `METALOOT_TOKEN` (create one at `https://metaloot.app/settings/api-tokens`) and run
 `metaloot deploy --no-build` after your own build step.
 
 ## Environment variables
 
 | Variable | Description |
 | --- | --- |
-| `METALOOT_TOKEN` | Access token override for CI/agents. Takes precedence over stored credentials for every command. |
+| `METALOOT_TOKEN` | Scoped API or CLI token override for CI/agents. Takes precedence over stored credentials for every command. |
 | `METALOOT_ORIGIN` | Portal origin (default `https://www.metaloot.app`). |
 | `METALOOT_STUDIO_ORIGIN` | Studio origin for `assets` commands (default `https://studio.metaloot.app`). Set to `http://localhost:3001` for local studio development. |
 | `METALOOT_CONFIG_DIR` | Credentials directory (default `~/.config/metaloot`). |

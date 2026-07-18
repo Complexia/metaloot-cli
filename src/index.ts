@@ -28,7 +28,7 @@ ${cyan("Deploy options")}
   --no-build        Skip running the build script
 
 ${cyan("Login options")}
-  --token <token>   Sign in with a token from ${dim("https://metaloot.app/cli/auth")}
+  --token <token>   Sign in with a token from ${dim("https://metaloot.app/settings/api-tokens")}
 
 ${cyan("Environment")}
   METALOOT_ORIGIN   Portal origin (default https://www.metaloot.app)
