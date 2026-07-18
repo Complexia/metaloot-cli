@@ -1,11 +1,14 @@
 #!/usr/bin/env node
+import { readFileSync } from "node:fs";
 import { parseArgs } from "node:util";
 import { assetsCommand } from "./assets.js";
 import { deploy } from "./deploy.js";
 import { login, logout, printWhoAmI } from "./login.js";
 import { bold, cyan, dim, fail } from "./ui.js";
 
-const VERSION = "0.2.3";
+const VERSION = (JSON.parse(
+  readFileSync(new URL("../package.json", import.meta.url), "utf8"),
+) as { version: string }).version;
 
 const HELP = `
 ${bold("metaloot")} — publish browser games to Metaloot
