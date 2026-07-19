@@ -21,7 +21,7 @@ export type Credentials = {
 
 type CredentialsFile = Record<string, Credentials>;
 
-function configDir(): string {
+export function configDir(): string {
   return (
     process.env.METALOOT_CONFIG_DIR ?? join(homedir(), ".config", "metaloot")
   );

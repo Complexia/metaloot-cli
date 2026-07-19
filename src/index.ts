@@ -5,6 +5,7 @@ import { assetsCommand } from "./assets.js";
 import { deploy } from "./deploy.js";
 import { login, logout, printWhoAmI } from "./login.js";
 import { bold, cyan, dim, fail } from "./ui.js";
+import { cachedUpdateNudge, maybeCheckForUpdate } from "./update.js";
 
 const VERSION = (JSON.parse(
   readFileSync(new URL("../package.json", import.meta.url), "utf8"),
@@ -37,9 +38,11 @@ ${cyan("Environment")}
   METALOOT_ORIGIN   Portal origin (default https://www.metaloot.app)
   METALOOT_STUDIO_ORIGIN  Studio origin (default https://studio.metaloot.app)
   METALOOT_TOKEN    Token override for CI
+  METALOOT_NO_UPDATE_CHECK  Set to 1 to skip the daily new-version check
 `;
 
 async function main(): Promise<void> {
+  maybeCheckForUpdate(VERSION);
   const rawArgs = process.argv.slice(2);
   if (rawArgs[0] === "assets") {
     await assetsCommand(rawArgs.slice(1));
@@ -89,9 +92,15 @@ async function main(): Promise<void> {
         noBuild: values["no-build"],
       });
       return;
-    default:
+    default: {
       console.log(HELP);
-      fail(`Unknown command: ${command}`);
+      const nudge = cachedUpdateNudge(VERSION);
+      fail(
+        `Unknown command: ${command}\n  If this command was added in a newer ` +
+          `release, your installed CLI (${VERSION}) may be too old.` +
+          (nudge ? `\n  ${nudge}` : "")
+      );
+    }
   }
 }
 
